@@ -15,9 +15,6 @@ jobs:
           --env MYSQL_ROOT_PASSWORD=root --env MYSQL_DATABASE=testdb
         ports:
           - 3306:3306
-        # Vous pouvez également définir un délai d'attente pour garantir que MySQL est prêt avant de commencer les tests
-        wait-for:
-          - 3306
 
     steps:
     - name: Checkout code
@@ -31,6 +28,13 @@ jobs:
     - name: Install dependencies
       run: |
         composer install
+
+    - name: Wait for MySQL to be ready
+      run: |
+        until mysql -h 127.0.0.1 -P 3306 -u root -proot -e 'select 1'; do
+          echo "Waiting for MySQL to be ready..."
+          sleep 5
+        done
 
     - name: Run PHPUnit tests
       env:
