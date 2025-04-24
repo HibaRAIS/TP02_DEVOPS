@@ -1,28 +1,42 @@
-name: CI
+name: PHPUnit Tests
 
 on:
   push:
     branches:
-      - master  # Change 'main' to 'master'
-  pull_request:
-    branches:
-      - master  # Change 'main' to 'master'
+      - master
 
 jobs:
-  test:
+  phpunit:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        options: >-
+          --env MYSQL_ROOT_PASSWORD=root --env MYSQL_DATABASE=testdb
+        ports:
+          - 3306:3306
+        # Vous pouvez également définir un délai d'attente pour garantir que MySQL est prêt avant de commencer les tests
+        wait-for:
+          - 3306
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'  # Update to PHP 8.1 or higher
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
 
-      - name: Install dependencies
-        run: composer install
+    - name: Install dependencies
+      run: |
+        composer install
 
-      - name: Run PHPUnit tests
-        run: vendor/bin/phpunit
+    - name: Run PHPUnit tests
+      env:
+        DB_HOST: 127.0.0.1
+        DB_PORT: 3306
+        DB_NAME: testdb
+        DB_USER: root
+        DB_PASSWORD: root
+      run: vendor/bin/phpunit
