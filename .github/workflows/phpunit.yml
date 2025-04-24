@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - main
+      - master  # Change 'main' to 'master'
   pull_request:
     branches:
-      - main
+      - master  # Change 'main' to 'master'
 
 jobs:
   test:
