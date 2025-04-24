@@ -45,14 +45,6 @@
     </source>
 -->
 
-<php>
-    <env name="CI_ENVIRONMENT" value="testing"/>
-    <env name="DB_HOST" value="127.0.0.1"/>
-    <env name="DB_PORT" value="3306"/>
-    <env name="DB_NAME" value="TP02_DEVOPS"/>
-    <env name="DB_USER" value="root"/>
-    <env name="DB_PASSWORD" value="root"/>
-</php>
 
 
     <php>
@@ -62,5 +54,10 @@
         <const name="PUBLICPATH" value="./public/"/>
         <server name="CODEIGNITER_SCREAM_DEPRECATIONS" value="0"/>
         <env name="CI_ENVIRONMENT" value="testing"/>
+         <env name="DB_HOST" value="127.0.0.1"/>
+        <env name="DB_PORT" value="3306"/>
+        <env name="DB_NAME" value="TP02_DEVOPS"/>
+        <env name="DB_USER" value="root"/>
+        <env name="DB_PASSWORD" value="root"/>
     </php>
 </phpunit>
