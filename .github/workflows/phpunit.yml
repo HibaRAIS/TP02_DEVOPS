@@ -2,9 +2,11 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   test:
@@ -12,16 +14,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '7.4'
 
-      - name: Install Composer dependencies
+      - name: Install dependencies
         run: composer install
 
       - name: Run PHPUnit tests
-        run: ./vendor/bin/phpunit --bootstrap vendor/autoload.php --testdox
-
+        run: vendor/bin/phpunit
