@@ -45,6 +45,10 @@
     </source>
 -->
 
+<php>
+    <env name="CI_ENVIRONMENT" value="testing"/>
+</php>
+
 
     <php>
         <server name="app.baseURL" value="http://localhost/"/>
