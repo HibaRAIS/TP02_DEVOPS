@@ -33,7 +33,7 @@ class Database extends Config
             'compress'     => false,
             'strictOn'     => false,
             'failover'     => [],
-            'port'         => env('DB_PORT', 3306),
+            'port'         => (int) env('DB_PORT', 3306),
             'numberNative' => false,
             'foundRows'    => false,
             'dateFormat'   => [
@@ -61,7 +61,7 @@ class Database extends Config
             'compress'     => false,
             'strictOn'     => false,
             'failover'     => [],
-            'port'         => env('DB_PORT', 3306),
+            'port'         => (int) env('DB_PORT', 3306),
             'foreignKeys'  => true,  // Assurer la prise en charge des clés étrangères en test
             'dateFormat'   => [
                 'date'     => 'Y-m-d',
