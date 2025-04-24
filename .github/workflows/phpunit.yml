@@ -1,42 +1,47 @@
 name: PHPUnit Tests
 
-on:
-  push:
-    branches:
-      - master
+on: [push, pull_request]
 
 jobs:
-  phpunit:
+  tests:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mysql:8
-        options: >-
-          --env MYSQL_ROOT_PASSWORD=root --env MYSQL_DATABASE=testdb
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: TP02_DEVOPS
         ports:
           - 3306:3306
-        # Vous pouvez également définir un délai d'attente pour garantir que MySQL est prêt avant de commencer les tests
-        wait-for:
-          - 3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.1'
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
 
-    - name: Install dependencies
-      run: |
-        composer install
+      - name: Install dependencies
+        run: composer install
 
-    - name: Run PHPUnit tests
-      env:
-        DB_HOST: localhost
-        DB_PORT: 3306
-        DB_NAME: TP02_DEVOPS
-        DB_USER: root
-        DB_PASSWORD: 
-      run: vendor/bin/phpunit
+      - name: Wait for MySQL to be ready
+        run: |
+          echo "Waiting for MySQL..."
+          until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
+            sleep 2
+          done
+
+      - name: Run PHPUnit
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_NAME: TP02_DEVOPS
+          DB_USER: root
+          DB_PASSWORD: 
+        run: vendor/bin/phpunit
