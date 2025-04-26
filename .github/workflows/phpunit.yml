@@ -61,4 +61,4 @@ jobs:
         run: php spark migrate --env testing
 
       - name: Run PHPUnit tests
-        run: ./vendor/bin/phpunit 
+        run: ./vendor/bin/phpunit --bootstrap vendor/codeigniter4/framework/system/Test/bootstrap.php tests/Models/FactureModelTest.php
