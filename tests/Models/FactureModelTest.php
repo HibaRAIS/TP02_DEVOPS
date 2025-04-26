@@ -31,4 +31,11 @@ class FactureModelTest extends CIUnitTestCase
         $this->assertIsInt($inserted); // On attend un ID entier
         $this->assertGreaterThan(0, $inserted);
     }
+
+    protected function setUp(): void
+{
+    parent::setUp();
+    command('migrate:refresh'); // recharge les migrations avant chaque test
+}
+
 }
