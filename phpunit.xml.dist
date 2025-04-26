@@ -34,6 +34,6 @@
         <env name="DB_USER" value="root"/>
         <!-- Mot de passe vide par défaut, peut être surchargé par GitHub Actions -->
         <env name="DB_PASSWORD" value=""/>
-        <env name="DB_PASSWORD" value="root"/>
+        <env name="DB_PASSWORDD" value="root"/>
     </php>
 </phpunit>
