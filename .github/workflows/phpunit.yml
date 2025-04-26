@@ -8,18 +8,15 @@ on:
     branches:
       - master
 
-
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+
     services:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: tp02_devops
         ports:
           - 3306:3306
@@ -33,22 +30,35 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
+          extensions: mbstring, intl, mysqli, pdo, pdo_mysql
+          coverage: none
 
-      - name: Install dependencies
-        run: composer install
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
 
       - name: Create .env.testing file
         run: |
           echo "CI_ENVIRONMENT=testing" >> .env.testing
           echo "database.default.hostname=127.0.0.1" >> .env.testing
           echo "database.default.database=tp02_devops" >> .env.testing
-          echo "database.default.username=${{ env.DB_USERNAME }}" >> .env.testing
-          echo "database.default.password=${{ env.DB_PASSWORD }}" >> .env.testing
+          echo "database.default.username=root" >> .env.testing
+          echo "database.default.password=root" >> .env.testing
           echo "database.default.DBDriver=MySQLi" >> .env.testing
           echo "database.default.port=3306" >> .env.testing
 
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h"127.0.0.1" --silent; then
+              echo "MySQL is up!"
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 1
+          done
+
       - name: Run migrations
-        run: php spark migrate
+        run: php spark migrate --env testing
 
       - name: Run PHPUnit tests
         run: ./vendor/bin/phpunit --bootstrap vendor/codeigniter4/framework/system/Test/bootstrap.php tests/Models/FactureModelTest.php
