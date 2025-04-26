@@ -4,9 +4,20 @@ namespace App\Tests\Models;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use App\Models\FactureModel;
+use Config\Services;
 
 class FactureModelTest extends CIUnitTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Rafraîchit la base de données et exécute toutes les migrations
+        command('migrate:refresh');
+
+        // Facultatif : vider le cache ou initialiser un environnement si nécessaire
+    }
+
     public function testFindAllFactures()
     {
         $model = new FactureModel();
