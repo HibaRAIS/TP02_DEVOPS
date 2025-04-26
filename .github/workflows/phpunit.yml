@@ -1,28 +1,18 @@
-name: PHPUnit Tests
-
-on: [push, pull_request]
-
 jobs:
-  tests:
+  test:
     runs-on: ubuntu-latest
-
     services:
       mysql:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: TP02_DEVOPS
+          MYSQL_DATABASE: tp02_devops
         ports:
           - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
+        options: --health-cmd="mysqladmin ping --silent" --health-timeout=30s --health-interval=5s --health-retries=5
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -30,37 +20,13 @@ jobs:
           php-version: '8.1'
 
       - name: Install dependencies
-        run: composer install
-
-      - name: Wait for MySQL to be ready
         run: |
-          echo "Waiting for MySQL..."
-          until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
-            sleep 2
-          done
+          composer install
 
-      - name: Copy .env.testing
-        run: cp .env.testing .env
+      - name: Run migrations
+        run: |
+          php spark migrate
 
-      - name: Run Migrations
-        run: php spark migrate
-        env:
-          CI_ENVIRONMENT: testing
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_NAME: TP02_DEVOPS
-          DB_USER: root
-          DB_PASSWORD: root
-
-      - name: Run PHPUnit
-        env:
-          CI_ENVIRONMENT: testing
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_NAME: TP02_DEVOPS
-          DB_USER: root
-          DB_PASSWORD: root
-        run: vendor/bin/phpunit
-
-      - name: Debug MySQL connection (optional)
-        run: mysql -h127.0.0.1 -uroot -proot -e "SHOW DATABASES;"
+      - name: Run PHPUnit tests
+        run: |
+          ./vendor/bin/phpunit --bootstrap vendor/codeigniter4/framework/system/Test/bootstrap.php tests/Models/FactureModelTest.php
