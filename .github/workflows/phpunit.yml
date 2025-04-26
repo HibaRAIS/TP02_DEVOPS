@@ -17,7 +17,7 @@ jobs:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: tp02_devops
+          MYSQL_DATABASE: TP02_DEVOPS
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping --silent" --health-timeout=30s --health-interval=5s --health-retries=5
@@ -40,7 +40,7 @@ jobs:
         run: |
           echo "CI_ENVIRONMENT=testing" >> .env.testing
           echo "database.default.hostname=127.0.0.1" >> .env.testing
-          echo "database.default.database=tp02_devops" >> .env.testing
+          echo "database.default.database=TP02_DEVOPS" >> .env.testing
           echo "database.default.username=root" >> .env.testing
           echo "database.default.password=root" >> .env.testing
           echo "database.default.DBDriver=MySQLi" >> .env.testing
