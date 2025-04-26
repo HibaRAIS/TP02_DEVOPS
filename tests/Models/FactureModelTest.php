@@ -38,8 +38,8 @@ class FactureModelTest extends CIUnitTestCase
         ];
 
         $inserted = $model->insert($data);
-        
-        $this->db = \Config\Database::connect('tests');
+
+      
         $this->assertIsInt($inserted); // On attend un ID entier
         $this->assertGreaterThan(0, $inserted);
     }
