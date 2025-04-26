@@ -23,9 +23,11 @@ jobs:
         options: --health-cmd="mysqladmin ping --silent" --health-timeout=30s --health-interval=5s --health-retries=5
 
     steps:
+      # Checkout the code from the repository
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Set up PHP environment with required extensions
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -33,9 +35,11 @@ jobs:
           extensions: mbstring, intl, mysqli, pdo, pdo_mysql
           coverage: none
 
+      # Install Composer dependencies
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
 
+      # Create .env.testing file with testing environment configuration
       - name: Create .env.testing file
         run: |
           echo "CI_ENVIRONMENT=testing" >> .env.testing
@@ -46,9 +50,11 @@ jobs:
           echo "database.default.DBDriver=MySQLi" >> .env.testing
           echo "database.default.port=3306" >> .env.testing
 
+      # Wait for MySQL to be ready before running the tests
       - name: Wait for MySQL to be ready
         run: |
-          for i in {1..30}; do
+          echo "Waiting for MySQL to start..."
+          for i in {1..60}; do
             if mysqladmin ping -h"127.0.0.1" --silent; then
               echo "MySQL is up!"
               break
@@ -57,8 +63,10 @@ jobs:
             sleep 1
           done
 
+      # Run database migrations
       - name: Run migrations
         run: php spark migrate --env testing
 
+      # Run PHPUnit tests
       - name: Run PHPUnit tests
         run: ./vendor/bin/phpunit --bootstrap vendor/codeigniter4/framework/system/Test/bootstrap.php tests/Models/FactureModelTest.php
