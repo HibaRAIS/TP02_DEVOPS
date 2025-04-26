@@ -15,13 +15,13 @@ class Database extends Config
     {
         parent::__construct();
 
-        // Configuration pour la base de données par défaut
+        // Configuration pour la base de données par défaut (développement)
         $this->default = [
             'DSN'          => '',
-            'hostname'     => env('DB_HOST', 'localhost'),
-            'username'     => env('DB_USER', 'root'),
-            'password'     => env('DB_PASSWORDD', 'root'),
-            'database'     => env('DB_NAME', 'TP02_DEVOPS'),
+            'hostname'     => env('database.default.hostname', '127.0.0.1'),
+            'username'     => env('database.default.username', 'root'),
+            'password'     => env('database.default.password', ''),
+            'database'     => env('database.default.database', 'TP02_DEVOPS'),
             'DBDriver'     => 'MySQLi',
             'DBPrefix'     => '',
             'pConnect'     => false,
@@ -33,7 +33,7 @@ class Database extends Config
             'compress'     => false,
             'strictOn'     => false,
             'failover'     => [],
-            'port'         => (int) env('DB_PORT', 3306),
+            'port'         => (int) env('database.default.port', 3306),
             'numberNative' => false,
             'foundRows'    => false,
             'dateFormat'   => [
@@ -43,17 +43,17 @@ class Database extends Config
             ],
         ];
 
-        // Configuration pour la base de données lors des tests
+        // Configuration pour les tests
         $this->tests = [
             'DSN'          => '',
-            'hostname'     => env('DB_HOST', '127.0.0.1'),
-            'username'     => env('DB_USER', 'root'),
-            'password'     => env('DB_PASSWORD', 'root'),
-            'database'     => env('DB_NAME', 'TP02_DEVOPS'),
+            'hostname'     => env('DB_HOST', env('database.default.hostname', '127.0.0.1')),
+            'username'     => env('DB_USER', env('database.default.username', 'root')),
+            'password'     => env('DB_PASSWORD', env('database.default.password', '')),
+            'database'     => env('DB_NAME', env('database.default.database', 'TP02_DEVOPS')),
             'DBDriver'     => 'MySQLi',
             'DBPrefix'     => 'test_',
             'pConnect'     => false,
-            'DBDebug'      => true,  // Définir à true pour afficher les erreurs en test
+            'DBDebug'      => true,
             'charset'      => 'utf8mb4',
             'DBCollat'     => 'utf8mb4_general_ci',
             'swapPre'      => '',
@@ -61,8 +61,8 @@ class Database extends Config
             'compress'     => false,
             'strictOn'     => false,
             'failover'     => [],
-            'port'         => (int) env('DB_PORT', 3306),
-            'foreignKeys'  => true,  // Assurer la prise en charge des clés étrangères en test
+            'port'         => (int) env('DB_PORT', env('database.default.port', 3306)),
+            'foreignKeys'  => true,
             'dateFormat'   => [
                 'date'     => 'Y-m-d',
                 'datetime' => 'Y-m-d H:i:s',
@@ -70,9 +70,14 @@ class Database extends Config
             ],
         ];
 
-        // Si l'environnement est 'testing', on passe à la configuration 'tests'
+        // Priorité aux variables d'environnement de test si définies
         if (ENVIRONMENT === 'testing') {
             $this->defaultGroup = 'tests';
+            
+            // Surcharge pour GitHub Actions
+            if (getenv('GITHUB_ACTIONS') === 'true') {
+                $this->tests['password'] = 'root';
+            }
         }
     }
 }

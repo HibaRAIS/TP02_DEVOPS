@@ -28,12 +28,13 @@
         <const name="PUBLICPATH" value="./public/"/>
         <server name="CODEIGNITER_SCREAM_DEPRECATIONS" value="0"/>
         <env name="CI_ENVIRONMENT" value="testing"/>
+        <!-- Configuration de base de données par défaut (pour local) -->
         <env name="DB_HOST" value="127.0.0.1"/>
         <env name="DB_PORT" value="3306"/>
         <env name="DB_NAME" value="TP02_DEVOPS"/>
         <env name="DB_USER" value="root"/>
-        <!-- Mot de passe vide par défaut, peut être surchargé par GitHub Actions -->
         <env name="DB_PASSWORD" value=""/>
-        <env name="DB_PASSWORDD" value="root"/>
+        <!-- Configuration spécifique pour GitHub Actions -->
+        <env name="GITHUB_DB_PASSWORD" value="root"/>
     </php>
 </phpunit>
