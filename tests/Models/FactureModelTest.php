@@ -4,20 +4,9 @@ namespace App\Tests\Models;
 
 use CodeIgniter\Test\CIUnitTestCase;
 use App\Models\FactureModel;
-use Config\Services;
 
 class FactureModelTest extends CIUnitTestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // Rafraîchit la base de données et exécute toutes les migrations
-        command('migrate:refresh');
-
-        // Facultatif : vider le cache ou initialiser un environnement si nécessaire
-    }
-
     public function testFindAllFactures()
     {
         $model = new FactureModel();
@@ -39,8 +28,14 @@ class FactureModelTest extends CIUnitTestCase
 
         $inserted = $model->insert($data);
 
-      
         $this->assertIsInt($inserted); // On attend un ID entier
         $this->assertGreaterThan(0, $inserted);
     }
+
+    protected function setUp(): void
+{
+    parent::setUp();
+    command('migrate:refresh'); // recharge les migrations avant chaque test
+}
+
 }
