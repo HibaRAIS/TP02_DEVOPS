@@ -45,7 +45,7 @@ jobs:
           DB_PORT: 3306
           DB_NAME: TP02_DEVOPS
           DB_USER: root
-          DB_PASSWORD: 
+          DB_PASSWORD: root
         run: vendor/bin/phpunit
       - name: Debug MySQL connection
         run: mysql -h127.0.0.1 -uroot -proot -e "SHOW DATABASES;"
