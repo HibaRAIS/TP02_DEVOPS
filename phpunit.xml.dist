@@ -32,6 +32,7 @@
         <env name="DB_PORT" value="3306"/>
         <env name="DB_NAME" value="TP02_DEVOPS"/>
         <env name="DB_USER" value="root"/>
-        <env name="DB_PASSWORD" value="root"/>
+        <!-- Mot de passe vide par défaut, peut être surchargé par GitHub Actions -->
+        <env name="DB_PASSWORD" value=""/>
     </php>
 </phpunit>
